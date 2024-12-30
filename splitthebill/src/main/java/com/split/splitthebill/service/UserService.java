@@ -21,7 +21,10 @@ public class UserService {
 
     public UserDto createUser(UserDto userDto) {
         String salt = Utils.generateRandomSalt();
-        String uuid = Utils.generateRandomUuid();
+        String uuid;
+        do {
+            uuid = Utils.generateRandomUuid();
+        } while (userRepository.existsByUuid(uuid));
         try {
             User user = UserMapper.mapTo(userDto, salt, uuid);
             User savedUser = userRepository.save(user);
