@@ -2,11 +2,11 @@ package com.split.splitthebill.service;
 
 import com.split.splitthebill.Utils;
 import com.split.splitthebill.dtos.GroupDto;
-import com.split.splitthebill.entities.Group;
-import com.split.splitthebill.entities.GroupUserMapping;
-import com.split.splitthebill.entities.GroupUserMappingId;
-import com.split.splitthebill.entities.User;
+import com.split.splitthebill.dtos.UserDto;
+import com.split.splitthebill.dtos.UserGroupsDto;
+import com.split.splitthebill.entities.*;
 import com.split.splitthebill.mappers.GroupMapper;
+import com.split.splitthebill.mappers.UserMapper;
 import com.split.splitthebill.repositories.GroupRepository;
 import com.split.splitthebill.repositories.GroupUserMappingRepository;
 import com.split.splitthebill.repositories.UserRepository;
@@ -32,21 +32,41 @@ public class GroupService {
         do {
             groupUuid = Utils.generateRandomUuid();
         } while (groupRepository.existsByGroupUuid(groupUuid));
-        Group group = GroupMapper.mapFrom(groupDto, groupUuid);
+        Group group = GroupMapper.mapTo(groupDto, groupUuid);
         Group savedGroup = groupRepository.save(group);
-        List<String> members = groupDto.getMembers();
+        List<String> members = groupDto.getMembers().stream().map(UserDto::getUuid).toList();
         for (String member : members) {
             User user = userRepository.findByUuid(member).orElseThrow();
-            GroupUserMapping groupUserMapping = groupUserMappingRepository.save(
+            groupUserMappingRepository.save(
                 GroupUserMapping.builder()
                         .id(
                             GroupUserMappingId.builder()
-                                .groupId(savedGroup)
-                                .userId(user)
+                                .group(savedGroup)
+                                .user(user)
                                 .build()
                         )
                         .build()
             );
         }
+    }
+
+    public UserGroupsDto getUserGroups(String userUuid) {
+        User user = userRepository.findByUuid(userUuid).orElseThrow();
+        List<String> groupUuids = groupUserMappingRepository.findAllByIdUser(user)
+                .stream()
+                .map(mapping -> mapping.getId().getGroup().getGroupUuid())
+                .toList();
+        return UserGroupsDto.builder()
+                .groups(groupUuids.stream().map(this::getGroup).toList())
+                .build();
+    }
+
+    public GroupDto getGroup(String groupUuid) {
+        Group group = groupRepository.findByGroupUuid(groupUuid);
+        List<UserDto> members = groupUserMappingRepository.findAllByIdGroup(group)
+                .stream()
+                .map(mapping -> UserMapper.mapToRes(mapping.getId().getUser()))
+                .toList();
+        return GroupMapper.mapFrom(group, members);
     }
 }

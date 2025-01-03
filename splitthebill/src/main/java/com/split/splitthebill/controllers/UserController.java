@@ -1,6 +1,9 @@
 package com.split.splitthebill.controllers;
 
 import com.split.splitthebill.dtos.SuccessResponse;
+import com.split.splitthebill.dtos.UserDetailedDto;
+import com.split.splitthebill.mappers.UserMapper;
+import com.split.splitthebill.requests.CreateUserRequest;
 import com.split.splitthebill.dtos.UserDto;
 import com.split.splitthebill.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +17,9 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/create_user")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
-        UserDto userDtoResponse = userService.createUser(userDto);
+    public ResponseEntity<UserDto> createUser(@RequestBody CreateUserRequest createUserRequest) {
+        UserDetailedDto userDetailedDto = UserMapper.mapFromReq(createUserRequest);
+        UserDto userDtoResponse = userService.createUser(userDetailedDto);
         return new ResponseEntity<>(userDtoResponse, HttpStatus.OK);
     }
 
@@ -26,20 +30,21 @@ public class UserController {
     }
 
     @PutMapping("/update_user")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
-        UserDto userDtoResponse = userService.updateUser(userDto);
+    public ResponseEntity<UserDto> updateUser(@RequestBody CreateUserRequest createUserRequest) {
+        UserDetailedDto userDetailedDto = UserMapper.mapFromReq(createUserRequest);
+        UserDto userDtoResponse = userService.updateUser(userDetailedDto);
         return new ResponseEntity<>(userDtoResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete_user")
-    public ResponseEntity<SuccessResponse> deleteUser(@RequestBody UserDto userDto) {
-        userService.deleteUser(userDto);
+    public ResponseEntity<SuccessResponse> deleteUser(@RequestBody UserDetailedDto userDetailedDto) {
+        userService.deleteUser(userDetailedDto);
         return new ResponseEntity<>(new SuccessResponse("Deleted Successfully", HttpStatus.OK.value()), HttpStatus.OK);
     }
 
     @PostMapping("/sign_in")
-    public ResponseEntity<UserDto> signIn(@RequestBody UserDto userDto) {
-        UserDto userDtoResponse = userService.signIn(userDto);
+    public ResponseEntity<UserDto> signIn(@RequestBody UserDetailedDto userDetailedDto) {
+        UserDto userDtoResponse = userService.signIn(userDetailedDto);
         return new ResponseEntity<>(userDtoResponse, HttpStatus.OK);
     }
 }

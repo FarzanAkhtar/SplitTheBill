@@ -1,5 +1,6 @@
 package com.split.splitthebill.dtos;
 
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +12,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GroupDto {
-    private String name;
-    private List<UserDto> members;
-    private List<ExpenseDto> expenses;
+public class UserGroupsDto {
+    List<GroupDto> groups;
 }

@@ -1,4 +1,4 @@
-package com.split.splitthebill.dtos;
+package com.split.splitthebill.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class CreateUserRequest {
     private String name;
     @JsonProperty("phone_number")
     private String phoneNumber;
-    private String uuid;
+    private String password;
 }

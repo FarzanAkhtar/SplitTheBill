@@ -18,9 +18,9 @@ public class GroupUserMappingId {
 //    private Long groupId;
     @JoinColumn(name = "group_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Group groupId;
+    private Group group;
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User userId;
+    private User user;
 }
