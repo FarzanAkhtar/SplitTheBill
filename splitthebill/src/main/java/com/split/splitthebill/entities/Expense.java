@@ -16,13 +16,14 @@ public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "expense_id_seq")
     private Long id;
+    @Column(name = "expense_uuid")
+    private String expenseUuid;
     @Column(name = "group_id")
     private Long groupId;
     @Column(name = "added_by")
     private Long addedBy;
     private Double amount;
     private String name;
-    private String category;
     @Column(name = "created_at")
-    private Long createdAt;
+    private String createdAt;
 }

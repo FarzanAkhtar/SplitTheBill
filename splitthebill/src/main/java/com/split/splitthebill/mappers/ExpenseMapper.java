@@ -1,23 +1,27 @@
 package com.split.splitthebill.mappers;
 
+import com.split.splitthebill.dtos.ExpenseDto;
 import com.split.splitthebill.dtos.GroupBaseDto;
 import com.split.splitthebill.dtos.GroupDto;
 import com.split.splitthebill.dtos.UserDto;
+import com.split.splitthebill.entities.Expense;
 import com.split.splitthebill.entities.Group;
+import com.split.splitthebill.entities.User;
+import com.split.splitthebill.requests.CreateExpenseRequest;
 import com.split.splitthebill.requests.CreateGroupRequest;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public abstract class GroupMapper {
-    public static GroupDto mapFromReq(CreateGroupRequest createGroupRequest) {
-        List<UserDto> members = createGroupRequest.getMembers().stream()
-                .map(UserMapper::mapFromUserUuid)
-                .toList();
-        return GroupDto.builder()
-                .name(createGroupRequest.getName())
-                .members(members)
+public abstract class ExpenseMapper {
+    public static ExpenseDto mapFromReq(CreateExpenseRequest createExpenseRequest) {
+        return ExpenseDto.builder()
+                .name(createExpenseRequest.getName())
+                .amount(createExpenseRequest.getAmount())
+                .members(createExpenseRequest.getMembers())
+                .groupUuid(createExpenseRequest.getGroupUuid())
+                .addedBy(createExpenseRequest.getAddedBy())
                 .build();
     }
 
@@ -28,13 +32,16 @@ public abstract class GroupMapper {
                 .build();
     }
 
-    public static Group mapTo(GroupDto groupDto, String uuid) {
+    public static Expense mapTo(ExpenseDto expenseDto, String uuid, Long groupId, Long userId) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = LocalDateTime.now().format(formatter);
-        return Group.builder()
-                .name(groupDto.getName())
-                .groupUuid(uuid)
+        return Expense.builder()
+                .name(expenseDto.getName())
+                .expenseUuid(uuid)
                 .createdAt(formattedDateTime)
+                .groupId(groupId)
+                .addedBy(userId)
+                .amount(expenseDto.getAmount())
                 .build();
     }
 

@@ -13,5 +13,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserGroupsDto {
-    List<GroupDto> groups;
+    List<GroupBaseDto> groups;
 }

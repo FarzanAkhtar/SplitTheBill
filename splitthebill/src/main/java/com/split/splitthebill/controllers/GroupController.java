@@ -32,7 +32,6 @@ public class GroupController {
     @GetMapping("/get_group")
     public ResponseEntity<GroupDto> getGroup(@RequestParam("group_uuid") String groupUuid) {
         GroupDto groupDto = groupService.getGroup(groupUuid);
-
         return new ResponseEntity<>(groupDto, HttpStatus.OK);
     }
 }

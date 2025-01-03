@@ -1,6 +1,7 @@
 package com.split.splitthebill.service;
 
 import com.split.splitthebill.Utils;
+import com.split.splitthebill.dtos.GroupBaseDto;
 import com.split.splitthebill.dtos.GroupDto;
 import com.split.splitthebill.dtos.UserDto;
 import com.split.splitthebill.dtos.UserGroupsDto;
@@ -13,7 +14,8 @@ import com.split.splitthebill.repositories.UserRepository;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
+
+import java.util.*;
 
 @Log
 @Service
@@ -52,13 +54,11 @@ public class GroupService {
 
     public UserGroupsDto getUserGroups(String userUuid) {
         User user = userRepository.findByUuid(userUuid).orElseThrow();
-        List<String> groupUuids = groupUserMappingRepository.findAllByIdUser(user)
+        List<GroupBaseDto> groups = groupUserMappingRepository.findAllByIdUser(user)
                 .stream()
-                .map(mapping -> mapping.getId().getGroup().getGroupUuid())
+                .map(mapping -> GroupMapper.mapToGroupBaseDto(mapping.getId().getGroup()))
                 .toList();
-        return UserGroupsDto.builder()
-                .groups(groupUuids.stream().map(this::getGroup).toList())
-                .build();
+        return UserGroupsDto.builder().groups(groups).build();
     }
 
     public GroupDto getGroup(String groupUuid) {

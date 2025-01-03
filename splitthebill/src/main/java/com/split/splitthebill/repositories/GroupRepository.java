@@ -12,7 +12,6 @@ import java.util.Optional;
 @Repository
 public interface GroupRepository extends CrudRepository<Group, Long> {
     boolean existsByGroupUuid(String groupUuid);
-    List<Group> findAllById(Iterable<Long> groupIds);
     Group findByGroupUuid(String groupUuid);
 }
 
